@@ -42,6 +42,23 @@ function themefeature_admin_prepare(&$form_state) {
       );
     }
   }
+  // Javascript
+  if ($this_theme->scripts) {
+    $form['js'] = array(
+      '#type' => 'fieldset',
+      '#title' => t("Javascripts"),
+    );
+    foreach($this_theme->scripts as $name => $path) {
+      $form['js'][$path] = array(
+        '#type' => 'textfield',
+        '#title' => $path,
+        '#maxlength' => 64,
+        '#description' => t("Enter an optional feature component name for this file."),
+        '#default_value' => $files['js']['default'][$path],
+      );
+    }
+  }
+
   $form['save'] = array(
     '#type' => 'submit',
     '#value' => t('Save'),
@@ -59,6 +76,7 @@ function themefeature_admin_prepare_submit(&$form, &$form_state) {
   db_query("TRUNCATE themefeature_name");
   foreach($form_state['values']['css'] as $media => $sheets) {
     foreach($sheets as $file => $name) {
+      if (!trim($name)) { continue; }
       $record = array(
         'theme' => $theme,
         'file' => $file,
@@ -68,5 +86,16 @@ function themefeature_admin_prepare_submit(&$form, &$form_state) {
       );
       drupal_write_record("themefeature_name", $record);
     }
+  }
+  foreach($form_state['values']['js'] as $file => $name) {
+    if (!trim($name)) { continue; }
+    $record = array(
+      'theme' => $theme,
+      'file' => $file,
+      'type' => 'js',
+      'media' => 'default',
+      'name' => $name,
+    );
+    drupal_write_record("themefeature_name", $record);
   }
 }
