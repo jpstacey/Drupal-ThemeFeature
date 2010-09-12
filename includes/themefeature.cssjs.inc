@@ -12,7 +12,7 @@ function cssjs_features_export($data, &$export, $module_name) {
   // with no further export processors called.
 
   foreach ($data as $component) {
-    $export['features']['cssjs'][] = $component;
+    $export['features']['cssjs'][$component] = $component;
   }
   return array();
 }
@@ -35,11 +35,12 @@ function cssjs_features_export_render($module_name, $data) {
   $code = array();
   $code[] = '$my_objects = array();';
   $options = cssjs_features_export_options();
-  foreach($data as $k) {
-    $code[] = "\$my_objects['$k'] = t('".$options[$k]."');";
+  foreach($options as $k => $v) {
+    $code[] = "\$my_objects['$k'] = t('".$v."');";
   }
   $code[] = "return \$my_objects;";
   $code = implode("\n", $code);
+
   return array('cssjs_defaults' => $code);
 }
 
