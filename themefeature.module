@@ -5,14 +5,12 @@
  * Theme Features
  */
 
-
 /**
  * Implementation of hook_perm
  */
 function themefeature_perm() {
   return array('prepare theme features');
 }
-
 
 /**
  * Implementation of hook_menu
@@ -24,6 +22,7 @@ function themefeature_menu() {
     'page arguments' => array('themefeature_admin_prepare'),
     'access arguments' => array('prepare theme features'),
     'file' => 'includes/themefeature.admin.inc',
+    'type' => MENU_LOCAL_TASK,
   );
 
   return $items;
