@@ -5,6 +5,39 @@
  * Theme Features
  */
 
+
+/**
+ * Implementation of hook_perm
+ */
+function themefeature_perm() {
+  return array('prepare theme features');
+}
+
+
+/**
+ * Implementation of hook_menu
+ */
+function themefeature_menu() {
+  $items['admin/build/features/themefeature'] = array(
+    'title' => t('Theme features'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('themefeature_admin_prepare'),
+    'access arguments' => array('prepare theme features'),
+    'file' => 'includes/themefeature.admin.inc',
+  );
+
+  return $items;
+}
+
+function themefeature_help($section) {
+  switch($section) {
+    case 'admin/help#features':
+      return "Theme Feature helps you turn theme files into features.";
+    case 'admin/build/features/themefeature':
+      return "Theme Feature can turn existing theme CSS and Javascript files into feature components by naming them below. These can then be packaged up into features.";
+  }
+}
+
 /**
  * Implementation of hook_init
  */

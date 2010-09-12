@@ -1,0 +1,52 @@
+<?php
+
+/**
+ * @file themefeature.install
+ * Install file for themefeature
+ */
+
+
+/**
+ * Implementation of hook_install
+ */
+function themefeature_install() {
+  drupal_install_schema('themefeature');
+}
+
+/**
+ * Implementation of hook_uninstall
+ */
+function themefeature_uninstall() {
+  drupal_uninstall_schema('themefeature');
+}
+
+/**
+ * Implementation of hook_schema
+ */
+function themefeature_schema() {
+  $schema['themefeature_name'] = array(
+    'description' => 'Optional names of theme CSS files for including in features',
+    'fields' => array(
+      'theme' => array(
+        'description' => 'Theme name',
+        'type' => 'varchar',
+        'length' => 255, // As per system table
+        'not null' => TRUE,
+      ),
+      'file' => array(
+        'description' => 'Filename within theme context (so not necessarily relative to Drupal root)',
+        'type' => 'varchar',
+        'length' => 1024,
+        'not null' => TRUE,
+      ),
+      'name' => array(
+        'description' => 'Name of corresponding feature component, as editable in admin',
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+      ),
+
+    ),
+  );
+  return $schema;
+}
