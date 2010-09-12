@@ -33,7 +33,7 @@ function cssjs_features_export_options() {
   foreach($named_files as $type => $bundle) {
     foreach($bundle as $media => $files) {
       foreach($files as $file => $name) {
-        $options["theme-$type-$media-$file"] = strtoupper("$type") . " ($media): $name";
+        $options["theme-$name"] = strtoupper("$type") . " ($media): $name";
       }
     }
   }
@@ -45,12 +45,42 @@ function cssjs_features_export_options() {
  * Implementation of componenthook_features_export_render
  */
 function cssjs_features_export_render($module_name, $data) {
+  module_load_include("inc", "themefeature", "includes/themefeature.files");
+  list($theme_name, $theme) = _themefeature_files_determine_theme();
+  $files = _themefeature_files_named($theme_name);
+
+  // Match up the data with relevant files where possible
+  foreach($files as $type => $bundle) {
+    foreach($bundle as $media => $file) {
+      foreach($file as $path => $name) {
+        foreach($data as $desired_name) {
+          if ($desired_name == "theme-$name") {
+            $data[$desired_name] = array(
+              'type' => $type,
+              'media' => $media,
+              'path' => $path,
+              'name' => $name,
+            );
+          }
+        }
+      }
+    }
+  }
+
   $code = array();
   $code[] = '$my_objects = array();';
   foreach($data as $k => $v) {
-    $code[] = "\$my_objects['$v'] = <<<EOF";
-    $code[] = "h1,h2,h3,h4,h5,h6 { color: red !important; }";
-    $code[] = "EOF;";
+    // Safe key for this component
+    $uniq = preg_replace("/-+/", "-", preg_replace("/\W/", "-", strtolower($module_name . "-" . $v['name'])));
+    // Ancillary data
+    $array = serialize($v);
+    $code[] = "\$my_objects['$uniq'] = unserialize('$array')";
+    // File data as a HERE document
+    $code[] = "\$my_objects['$uniq']['data'] = <<<EOF_CSS_JS";
+    $resource = fopen($v['path'], "r");
+    $code[] = $resource?fread($resource, filesize($v['path'])):"";
+    $resource && fclose($resource);
+    $code[] = "EOF_CSS_JS;";
   }
   $code[] = "return \$my_objects;";
   $code = implode("\n", $code);

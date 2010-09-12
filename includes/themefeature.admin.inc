@@ -12,12 +12,9 @@ function themefeature_admin_prepare(&$form_state) {
   $form['#tree'] = TRUE;
 
   // Ensure we have a theme to work with
-  global $theme;
-  if (!$theme) { init_theme(); }
+  module_load_include("inc", "themefeature", "includes/themefeature.files");
+  list($theme, $this_theme) = _themefeature_files_determine_theme();
 
-  // Work out which theme this is and tell the user
-  $themes = list_themes();
-  $this_theme = $themes[$theme];
   $name = $this_theme->name ? $this_theme->name : "undefined";
   $form['theme_note']['#value'] = t("Current theme is: '%name'. Examining files in this theme only.", array("%name" => $name));
 

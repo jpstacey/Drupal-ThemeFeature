@@ -90,3 +90,17 @@ function _themefeature_files_named($named_theme = NULL) {
   }
   return $files;
 }
+
+/**
+ * Work out and return default theme
+ */
+function _themefeature_files_determine_theme() {
+  global $theme;
+  if (!$theme) { init_theme(); }
+
+  // Work out which theme this is and tell the user
+  $themes = list_themes();
+  $this_theme = $themes[$theme];
+
+  return array($theme, $this_theme);
+}
