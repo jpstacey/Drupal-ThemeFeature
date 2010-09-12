@@ -45,6 +45,10 @@ function themefeature_init() {
 
   // Re-create when cache is cleared
   $check = cache_get("themefeature:done");
+
+  // Hack to get admin/build/modules and admin/build/features to react quickly
+  (arg(0) == "admin") && (arg(1) == "build") && ($check = FALSE);
+
   if (!$check) {
     module_load_include("inc", "themefeature", "includes/themefeature.files");
     _themefeature_cache_recreate($dir);
@@ -53,7 +57,7 @@ function themefeature_init() {
     cache_set("themefeature:done", time());
   }
 
-  // Now add any JS/CSS we can find
+  // Now add any JS/CSS we can find in that directory
   foreach(glob("$dir/*.js") as $file) {
     drupal_add_js($file);
   }
