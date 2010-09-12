@@ -47,7 +47,7 @@ function themefeature_init() {
   // Re-create when cache is cleared
   $check = cache_get("themefeature:done");
   if (!$check) {
-    module_load_include("inc", "themefeature", "includes/themefeature.cache");
+    module_load_include("inc", "themefeature", "includes/themefeature.files");
     _themefeature_cache_recreate($dir);
 
     // We're done - let's not do this again!
