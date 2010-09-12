@@ -1,7 +1,8 @@
 <?php
 
 /**
- * @file 
+ * @file themefeature.cssjs.inc
+ * Feature component administration for CSS/JS
  */
 
 /**
@@ -27,7 +28,15 @@ function cssjs_features_export_options() {
   }
 
   // Extra options
-  $options['testobject3'] = 'CSS/JS new test objectzzzz';
+  module_load_include("inc", "themefeature", "includes/themefeature.files");
+  $named_files = _themefeature_files_named();
+  foreach($named_files as $type => $bundle) {
+    foreach($bundle as $media => $files) {
+      foreach($files as $file => $name) {
+        $options["theme-$type-$media-$file"] = strtoupper("$type") . " ($media): $name";
+      }
+    }
+  }
 
   return $options;
 }

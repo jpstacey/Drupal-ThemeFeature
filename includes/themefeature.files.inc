@@ -77,8 +77,14 @@ function _themefeature_files_create($dir) {
 /**
  * Get all named files for a given theme
  */
-function _themefeature_files_named($theme) {
-  $result = db_query("SELECT * FROM {themefeature_name} WHERE theme = '%s'", $theme);
+function _themefeature_files_named($named_theme = NULL) {
+  if (!isset($named_theme)) {
+    global $theme;
+    init_theme();
+    $named_theme = $theme;
+  }
+
+  $result = db_query("SELECT * FROM {themefeature_name} WHERE theme = '%s' ORDER BY type, media, file", $named_theme);
   while($row = db_fetch_array($result)) {
     $files[$row['type']][$row['media']][$row['file']] = $row['name'];
   }
