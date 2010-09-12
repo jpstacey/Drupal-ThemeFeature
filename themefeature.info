@@ -1,0 +1,9 @@
+; $Id$
+; Info file for Theme Feature module
+name = Theme Feature
+core = 6.x
+description = Package up elements of a theme as features: CSS and Javascript
+
+dependencies[] = features
+package = Features
+
