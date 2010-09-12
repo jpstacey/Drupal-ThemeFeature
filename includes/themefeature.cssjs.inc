@@ -36,7 +36,9 @@ function cssjs_features_export_render($module_name, $data) {
   $code[] = '$my_objects = array();';
   $options = cssjs_features_export_options();
   foreach($options as $k => $v) {
-    $code[] = "\$my_objects['$k'] = t('".$v."');";
+    $code[] = "\$my_objects['$k'] = <<<EOF";
+    $code[] = "h1,h2,h3,h4,h5,h6 { color: red !important; }";
+    $code[] = "EOF;";
   }
   $code[] = "return \$my_objects;";
   $code = implode("\n", $code);

@@ -9,13 +9,24 @@
  * Implementation of hook_init
  */
 function themefeature_init() {
+  $dir = variable_get('file_directory_path', 'files') . '/themefeature';
+
+  // Re-create when cache is cleared
   $check = cache_get("themefeature:done");
   if (!$check) {
-    module_load_include("inc", "features", "features.export");
-    $enabled = features_get_default_map("cssjs");
-    foreach($enabled as $k => $v) {
-    }
+    module_load_include("inc", "themefeature", "includes/themefeature.cache");
+    _themefeature_cache_recreate($dir);
+
+    // We're done - let's not do this again!
     cache_set("themefeature:done", time());
+  }
+
+  // Now add any JS/CSS we can find
+  foreach(glob("$dir/*.js") as $file) {
+    drupal_add_js($file);
+  }
+  foreach(glob("$dir/*.css") as $file) {
+    drupal_add_css($file);
   }
 }
 
@@ -38,5 +49,7 @@ function themefeature_features_api() {
  * Implementation of hook_features_export_alter
  */
 function themefeature_features_export_alter(&$export, $module_name) {
+  // CSSJS features only work with the Theme Features module
+  $export['features']['cssjs'] && ($export['dependencies']['themefeature'] = 'themefeature');
 }
 
