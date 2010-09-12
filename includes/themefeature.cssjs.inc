@@ -71,10 +71,11 @@ function cssjs_features_export_render($module_name, $data) {
   $code[] = '$my_objects = array();';
   foreach($data as $k => $v) {
     // Safe key for this component
-    $uniq = preg_replace("/-+/", "-", preg_replace("/\W/", "-", strtolower($module_name . "-" . $v['name'])));
+    $uniq = _themefeature_files_safe_key($module_name . "-" . $v['name']);
+
     // Ancillary data
     $array = serialize($v);
-    $code[] = "\$my_objects['$uniq'] = unserialize('$array')";
+    $code[] = "\$my_objects['$uniq'] = unserialize('$array');";
     // File data as a HERE document
     $code[] = "\$my_objects['$uniq']['data'] = <<<EOF_CSS_JS";
     $resource = fopen($v['path'], "r");

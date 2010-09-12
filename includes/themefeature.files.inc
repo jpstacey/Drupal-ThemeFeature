@@ -62,13 +62,15 @@ function _themefeature_files_create($dir) {
     }
     // Write file with data
     $value = $values[$module][$component];
-    $file = "$dir/$component.css";
+    $filename = _themefeature_files_safe_key($module . "-" . $value['name']) . "." . $value['type'];
+    $file = "$dir/$filename";
+
     $resource = fopen($file, "w");
     if (!$resource) {
       drupal_set_message("Could not create new theme feature file $file");
       return FALSE;
     }
-    fwrite($resource, $value);
+    fwrite($resource, $value['data']);
     fclose($resource);
   }
   return TRUE;
@@ -89,6 +91,13 @@ function _themefeature_files_named($named_theme = NULL) {
     $files[$row['type']][$row['media']][$row['file']] = $row['name'];
   }
   return $files;
+}
+
+/**
+ * Safe filename
+ */
+function _themefeature_files_safe_key($text) {
+  return preg_replace("/-+/", "-", preg_replace("/\W/", "-", strtolower($text)));
 }
 
 /**

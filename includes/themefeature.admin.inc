@@ -57,7 +57,7 @@ function themefeature_admin_prepare_submit(&$form, &$form_state) {
   global $theme;
 
   db_query("TRUNCATE themefeature_name");
-  foreach($form_state['values']['stylesheets'] as $media => $sheets) {
+  foreach($form_state['values']['css'] as $media => $sheets) {
     foreach($sheets as $file => $name) {
       $record = array(
         'theme' => $theme,
