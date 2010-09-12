@@ -67,6 +67,25 @@ function cssjs_features_export_render($module_name, $data) {
     }
   }
 
+  // Any we can't match up, try to get from enabled components
+  $enabled = features_get_default_map("cssjs");
+  foreach($data as $unwanted_key => $desired_name) {
+    if (is_array($desired_name)) { continue; }
+
+    // Match up by assembling the key that export assembles below
+    // and calling the module's feature defaults
+    $attempted_key = _themefeature_files_safe_key($module_name . "-" . preg_replace("/^theme-/", "", $desired_name));
+    if (array_key_exists($attempted_key, $enabled)) {
+      $fn = $module_name . "_cssjs_defaults";
+      if(function_exists($fn)) {
+        $data = $fn();
+        if($data[$attempted_key]) {
+          unset($data[$unwanted_key]);
+        }
+      }   
+    }
+  }
+
   $code = array();
   $code[] = '$my_objects = array();';
   foreach($data as $k => $v) {
@@ -78,8 +97,15 @@ function cssjs_features_export_render($module_name, $data) {
     $code[] = "\$my_objects['$uniq'] = unserialize('$array');";
     // File data as a HERE document
     $code[] = "\$my_objects['$uniq']['data'] = <<<EOF_CSS_JS";
-    $resource = fopen($v['path'], "r");
-    $code[] = $resource?fread($resource, filesize($v['path'])):"";
+
+    // Try to open theme file (that's our definition of overriding, when the theme file differs)
+    if (file_exists($v['path'])) {
+      $resource = fopen($v['path'], "r");
+      $v['data'] = fread($resource, filesize($v['path']));
+      fclose($resource);
+    }
+
+    $code[] = $v['data'];
     $resource && fclose($resource);
     $code[] = "EOF_CSS_JS;";
   }
