@@ -6,6 +6,20 @@
  */
 
 /**
+ * Implementation of hook_init
+ */
+function themefeature_init() {
+  $check = cache_get("themefeature:done");
+  if (!$check) {
+    module_load_include("inc", "features", "features.export");
+    $enabled = features_get_default_map("cssjs");
+    foreach($enabled as $k => $v) {
+    }
+    cache_set("themefeature:done", time());
+  }
+}
+
+/**
  * Implementation of hook_features_api
  */
 function themefeature_features_api() {
