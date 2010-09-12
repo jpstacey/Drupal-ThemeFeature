@@ -21,10 +21,14 @@ function cssjs_features_export($data, &$export, $module_name) {
  * Implementation of componenthook_features_export_options
  */
 function cssjs_features_export_options() {
-  $options = array(
-    'testobject'=> 'CSS/JS test object',
-    'testobject2'=> 'CSS/JS another test object',
-  );
+  // Any options provided by enabled features
+  foreach(features_get_default_map("cssjs") as $component => $module) {
+    $options[$component] = $component;
+  }
+
+  // Extra options
+  $options['testobject3'] = 'CSS/JS new test objectzzzz';
+
   return $options;
 }
 
@@ -34,9 +38,8 @@ function cssjs_features_export_options() {
 function cssjs_features_export_render($module_name, $data) {
   $code = array();
   $code[] = '$my_objects = array();';
-  $options = cssjs_features_export_options();
-  foreach($options as $k => $v) {
-    $code[] = "\$my_objects['$k'] = <<<EOF";
+  foreach($data as $k => $v) {
+    $code[] = "\$my_objects['$v'] = <<<EOF";
     $code[] = "h1,h2,h3,h4,h5,h6 { color: red !important; }";
     $code[] = "EOF;";
   }
