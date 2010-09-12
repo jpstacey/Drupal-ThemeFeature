@@ -73,3 +73,14 @@ function _themefeature_files_create($dir) {
   }
   return TRUE;
 }
+
+/**
+ * Get all named files for a given theme
+ */
+function _themefeature_files_named($theme) {
+  $result = db_query("SELECT * FROM {themefeature_name} WHERE theme = '%s'", $theme);
+  while($row = db_fetch_array($result)) {
+    $files[$row['type']][$row['media']][$row['file']] = $row['name'];
+  }
+  return $files;
+}

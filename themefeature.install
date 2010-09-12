@@ -39,6 +39,18 @@ function themefeature_schema() {
         'length' => 1024,
         'not null' => TRUE,
       ),
+      'type' => array(
+        'description' => 'Stylesheet or Javascript',
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+      ),
+      'media' => array(
+        'description' => 'Media, for stylesheets only',
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => FALSE,
+      ),
       'name' => array(
         'description' => 'Name of corresponding feature component, as editable in admin',
         'type' => 'varchar',
