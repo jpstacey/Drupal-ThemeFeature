@@ -6,6 +6,15 @@
  */
 
 /**
+ * Full cache recreate cycle
+ */
+function _themefeature_cache_recreate($dir) {
+  if (_themefeature_files_directory_exists($dir)) {
+    _themefeature_files_clear($dir) && _themefeature_files_create($dir);
+  }
+}
+
+/**
  * Assert cache directory exists OK; create if not
  */
 function _themefeature_files_directory_exists($dir) {
