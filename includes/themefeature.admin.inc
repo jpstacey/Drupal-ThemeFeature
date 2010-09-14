@@ -27,21 +27,24 @@ function themefeature_admin_prepare(&$form_state) {
     '#type' => 'fieldset',
     '#title' => t("Stylesheets"),
   );
-  foreach($this_theme->stylesheets as $media => $sheets) {
-    $form['css'][$media] = array(
-      '#type' => 'fieldset',
-      '#title' => t("Media = @media", array("@media" => $media)),
-    );
-    foreach($sheets as $name => $path) {
-      $form['css'][$media][$path] = array(
-        '#type' => 'textfield',
-        '#title' => $path,
-        '#maxlength' => 64,
-        '#description' => t("Enter an optional feature component name for this file."),
-        '#default_value' => $files['css'][$media][$path],
+  if ($this_theme->stylesheets) {
+    foreach($this_theme->stylesheets as $media => $sheets) {
+      $form['css'][$media] = array(
+        '#type' => 'fieldset',
+        '#title' => t("Media = @media", array("@media" => $media)),
       );
+      foreach($sheets as $name => $path) {
+        $form['css'][$media][$path] = array(
+          '#type' => 'textfield',
+          '#title' => $path,
+          '#maxlength' => 64,
+          '#description' => t("Enter an optional feature component name for this file."),
+          '#default_value' => $files['css'][$media][$path],
+        );
+      }
     }
   }
+
   // Javascript
   if ($this_theme->scripts) {
     $form['js'] = array(
@@ -74,28 +77,31 @@ function themefeature_admin_prepare_submit(&$form, &$form_state) {
   global $theme;
 
   db_query("TRUNCATE themefeature_name");
-  foreach($form_state['values']['css'] as $media => $sheets) {
-    foreach($sheets as $file => $name) {
+  if ($form_state['values']['css']) {
+    foreach($form_state['values']['css'] as $media => $sheets) {
+      foreach($sheets as $file => $name) {
+        if (!trim($name)) { continue; }
+        $record = array(
+          'theme' => $theme,
+          'file' => $file,
+          'type' => 'css',
+          'media' => $media,
+          'name' => $name,
+        );
+        drupal_write_record("themefeature_name", $record);
+      }
+    }
+  if ($form_state['values']['js']) {
+    foreach($form_state['values']['js'] as $file => $name) {
       if (!trim($name)) { continue; }
       $record = array(
         'theme' => $theme,
         'file' => $file,
-        'type' => 'css',
-        'media' => $media,
+        'type' => 'js',
+        'media' => 'default',
         'name' => $name,
       );
       drupal_write_record("themefeature_name", $record);
     }
-  }
-  foreach($form_state['values']['js'] as $file => $name) {
-    if (!trim($name)) { continue; }
-    $record = array(
-      'theme' => $theme,
-      'file' => $file,
-      'type' => 'js',
-      'media' => 'default',
-      'name' => $name,
-    );
-    drupal_write_record("themefeature_name", $record);
   }
 }
