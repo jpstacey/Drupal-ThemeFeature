@@ -41,7 +41,7 @@ function themefeature_help($section) {
  * Implementation of hook_init
  */
 function themefeature_init() {
-  $dir = variable_get('file_directory_path', 'files') . '/themefeature';
+  $dir = file_directory_path() . '/themefeature';
 
   // Re-create when cache is cleared
   $check = cache_get("themefeature:done");
