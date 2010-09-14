@@ -104,9 +104,8 @@ function cssjs_features_export_render($module_name, $data) {
       $v['data'] = fread($resource, filesize($v['path']));
       fclose($resource);
     }
-
+    // Write data, whatever it is
     $code[] = $v['data'];
-    $resource && fclose($resource);
     $code[] = "EOF_CSS_JS;";
   }
   $code[] = "return \$my_objects;";

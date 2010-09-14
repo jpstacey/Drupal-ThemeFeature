@@ -86,6 +86,7 @@ function _themefeature_files_named($named_theme = NULL) {
     $named_theme = $theme;
   }
 
+  $files = array();
   $result = db_query("SELECT * FROM {themefeature_name} WHERE theme = '%s' ORDER BY type, media, file", $named_theme);
   while($row = db_fetch_array($result)) {
     $files[$row['type']][$row['media']][$row['file']] = $row['name'];
