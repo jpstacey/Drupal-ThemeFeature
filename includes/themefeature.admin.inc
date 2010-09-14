@@ -91,6 +91,7 @@ function themefeature_admin_prepare_submit(&$form, &$form_state) {
         drupal_write_record("themefeature_name", $record);
       }
     }
+  }
   if ($form_state['values']['js']) {
     foreach($form_state['values']['js'] as $file => $name) {
       if (!trim($name)) { continue; }
